@@ -24,7 +24,7 @@ public class Sender {
             InputStreamReader list_isr = new InputStreamReader(list_fis);
             BufferedReader list_br = new BufferedReader(list_isr);
 
-            while(!list_br.readLine().equals(null)) {
+            while(list_br.readLine() != null) {
                 ip.add(list_br.readLine());
             }
 
