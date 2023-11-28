@@ -54,10 +54,14 @@ public class Sender {
                 bw.flush();
                 System.out.println(ldt.format(dtf));
 
-                bw.write(message.length() + " " + message);
+                bw.write(message.length());
                 bw.newLine();
                 bw.flush();
-                System.out.println(message.length() + " " + message);
+                System.out.println(message.length());
+
+                bw.write(message);
+                bw.flush();
+                System.out.println(message);
 
                 bw.close();
             }
