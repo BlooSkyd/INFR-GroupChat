@@ -1,10 +1,14 @@
 import java.io.*;
 import java.net.*;
-import java.time.*;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 
 public class Sender {
+    public static void main(String[] args) {
+        try {
+            new Sender(args);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     
     private static String getSenderName(String[] args) {
         String res = "";
@@ -13,40 +17,42 @@ public class Sender {
         }
         return res;
     }
+    
+    public Sender(String[] args) throws Exception {
 
-    public static void main(String[] args) {
+        String user = getSenderName(args);
+        CarnetAdresse carnet = new CarnetAdresse();
+
+        InputStreamReader inputReader = new InputStreamReader(System.in);
+        BufferedReader bufferReader = new BufferedReader(inputReader);
+
         
-        final String user = getSenderName(args); 
+        
+        String entry = bufferReader.readLine();
+        while (!entry.equals("/stop")) {
 
-        try {
-            CarnetAdresse ca = new CarnetAdresse();
+            
 
+            for (int i = 0; i < carnet.getSize(); i++) {
+                Socket socket = new Socket(carnet.getIp(i), 2023);
 
-            String message = new String();
+                OutputStream os = socket.getOutputStream();
+                OutputStreamWriter outputWriter = new OutputStreamWriter(os);
+                BufferedWriter bufferedWriter = new BufferedWriter(outputWriter);
 
-            InputStreamReader isr = new InputStreamReader(System.in);
-            BufferedReader br = new BufferedReader(isr);
+                Message msg = new Message(user, entry);
+                //System.out.println(msg);
 
-            for (int i = 0; i < ca.getSize(); i++ ) {
-                Socket so = new Socket(ca.getIp(i),2023);
+                bufferedWriter.write(msg.send());
+                bufferedWriter.flush();
 
-                OutputStream os = so.getOutputStream();
-                OutputStreamWriter osw = new OutputStreamWriter(os);
-                BufferedWriter bw = new BufferedWriter(osw);
+                //System.out.println(msg.send());
 
-                message = br.readLine();
-                LocalDateTime ldt = LocalDateTime.now();
-                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
-                Message m = new Message(user, ldt.format(dtf), String.valueOf(message.length()), message);
-                bw.write(m.send());
-                bw.flush();
-                System.out.println(m.send());
-                so.close();
+                socket.close();
             }
+            entry = bufferReader.readLine();
         }
-        catch(Exception e) {
-            e.printStackTrace();
-        }
+
+        
     }
 }

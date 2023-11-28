@@ -1,4 +1,5 @@
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Message {
     private String nom;
@@ -6,23 +7,31 @@ public class Message {
     private String taille;
     private String message;
 
-    public Message(String nom, String ldt, String taille, String message) {
+    private static DateTimeFormatter dtFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    public Message(String nom, String message) {
+        LocalDateTime localDT = LocalDateTime.now();
         this.nom = nom;
-        this.ldt = ldt;
-        this.taille = taille;
+        this.ldt = localDT.format(dtFormat);
+        this.taille = String.valueOf(message.length());
         this.message = message;
     }
 
-    public String send(){
-            return (this.nom + "\n" + this.ldt + "\n" + this.taille + "\n" + this.message);
+    public String send() {
+        return (this.nom + "\\n" + this.ldt + "\\n" + this.taille + "\\n" + this.message);
     }
 
-    public String get(){
+    // TODO : à supprimer ?
+    public String get() {
         if (Integer.parseInt(this.taille) == this.message.length()) {
             return (this.nom + "\n" + this.ldt + "\n" + this.taille + "\n" + this.message);
-        }
-        else {
+        } else {
             return "Erreur";
         }
+    }
+    
+    @Override
+    public String toString() {
+        return this.nom + ";" + this.ldt + ";" + this.taille + ";" + this.message;
     }
 }
