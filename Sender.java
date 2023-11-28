@@ -21,6 +21,7 @@ public class Sender {
         try {
             CarnetAdresse ca = new CarnetAdresse();
 
+
             String message = new String();
 
             InputStreamReader isr = new InputStreamReader(System.in);
