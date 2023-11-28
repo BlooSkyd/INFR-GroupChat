@@ -19,6 +19,7 @@ public class Sender {
         final String user = getSenderName(args); 
 
         try {
+
             ArrayList<String> ip = new ArrayList<String>();
             String message = new String();
 
