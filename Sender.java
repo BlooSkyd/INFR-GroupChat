@@ -15,7 +15,9 @@ public class Sender {
     }
 
     public static void main(String[] args) {
-        System.out.println(Sender.getSenderName(args));
+        
+        final String user = getSenderName(args); 
+
         try {
             ArrayList<String> ip = new ArrayList<String>();
             String message = new String();
@@ -42,10 +44,10 @@ public class Sender {
 
                 message = br.readLine();
 
-                bw.write(args[0]);
+                bw.write(user);
                 bw.newLine();
                 bw.flush();
-                System.out.println(args[0]);
+                System.out.println(user);
 
                 LocalDateTime ldt = LocalDateTime.now();
                 DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
@@ -54,7 +56,7 @@ public class Sender {
                 bw.flush();
                 System.out.println(ldt.format(dtf));
 
-                bw.write(message.length());
+                bw.write(String.valueOf(message.length()));
                 bw.newLine();
                 bw.flush();
                 System.out.println(message.length());
@@ -63,7 +65,7 @@ public class Sender {
                 bw.flush();
                 System.out.println(message);
 
-                bw.close();
+                so.close();
             }
         }
         catch(Exception e) {

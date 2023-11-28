@@ -26,11 +26,6 @@ public class Receiver {
                 writer.newLine();
                 System.out.println(entry);
                 writer.flush();
-
-                System.out.println("[Server] Stopping server...");
-
-                Thread.sleep(100);
-
                 entry = reader.readLine();
 
             }
@@ -42,7 +37,7 @@ public class Receiver {
             server.close();
 
         } catch (Exception e) {
-            //System.out.println(">>> Exception: "+e);
+            System.out.println(">>> Exception: "+e);
         }
     }
 }
