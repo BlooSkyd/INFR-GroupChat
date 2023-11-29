@@ -45,10 +45,11 @@ public class Receiver {
 
             // Tant que la saisie n'est pas "stop", on l'affiche
             while ((entry = reader.readLine()) != null) { //&& !entry.equals("$/stop")
-                //System.out.println("[Server] Received: " + entry);
+                //String v =entry.replaceAll("\\\\n", ";");
+                //System.out.println("[Server] Received: " + v);
                 //System.out.println(entry);
                 String result = iomHandler.decode(entry);
-                //System.out.println(result);
+                System.out.println(result);
                 writer.write(result);
                 writer.newLine();
                 writer.flush();

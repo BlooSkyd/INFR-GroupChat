@@ -15,7 +15,7 @@ public class Sender {
         for (String arg : args) {
             res += arg;
         }
-        return res;
+        return "\u001B[32m"+res+"\u001B[0m";
     }
     
     public Sender(String[] args) throws Exception {
@@ -26,12 +26,9 @@ public class Sender {
         InputStreamReader inputReader = new InputStreamReader(System.in);
         BufferedReader bufferReader = new BufferedReader(inputReader);
 
-        
-        
         String entry = bufferReader.readLine();
-        while (!entry.equals("/stop")) {
 
-            
+        while (!entry.equals("/stop")) {
 
             for (int i = 0; i < carnet.getSize(); i++) {
                 Socket socket = new Socket(carnet.getIp(i), 2023);
@@ -41,12 +38,10 @@ public class Sender {
                 BufferedWriter bufferedWriter = new BufferedWriter(outputWriter);
 
                 Message msg = new Message(user, entry);
-                //System.out.println(msg);
+                System.out.println("[Sender] : "+msg.send());
 
                 bufferedWriter.write(msg.send());
                 bufferedWriter.flush();
-
-                //System.out.println(msg.send());
 
                 socket.close();
             }
