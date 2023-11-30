@@ -20,34 +20,41 @@ public class Sender {
     
     public Sender(String[] args) throws Exception {
 
-        String user = getSenderName(args);
+        IOMesssageHandler ioMH = new IOMesssageHandler(getSenderName(args));
         CarnetAdresse carnet = new CarnetAdresse();
 
         InputStreamReader inputReader = new InputStreamReader(System.in);
         BufferedReader bufferReader = new BufferedReader(inputReader);
 
         String entry = bufferReader.readLine();
+        Boolean msgToSend = !entry.startsWith("/") && !entry.equals("");
 
         while (!entry.equals("/stop")) {
 
-            for (int i = 0; i < carnet.getSize(); i++) {
+            if (msgToSend) {
+                for (int i = 0; i < carnet.getSize(); i++) {
                 Socket socket = new Socket(carnet.getIp(i), 2023);
 
                 OutputStream os = socket.getOutputStream();
                 OutputStreamWriter outputWriter = new OutputStreamWriter(os);
                 BufferedWriter bufferedWriter = new BufferedWriter(outputWriter);
 
-                Message msg = new Message(user, entry);
-                System.out.println("[Sender] : "+msg.send());
+                Message msg = new Message(ioMH.getUser(), entry);
+                System.out.println("[Sender] : " + msg.send());
 
                 bufferedWriter.write(msg.send());
                 bufferedWriter.flush();
 
                 socket.close();
+                } 
+            } else {
+                ioMH.analyse(entry);
             }
+            
             entry = bufferReader.readLine();
-        }
+            msgToSend = !entry.startsWith("/") && !entry.equals("");
 
-        
+        }
+    
     }
 }

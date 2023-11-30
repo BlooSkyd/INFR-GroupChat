@@ -1,5 +1,17 @@
 public class IOMesssageHandler {
 
+    private String username; 
+    private String user;
+
+    public IOMesssageHandler(String username) {
+        this.username = username;
+    }
+
+    public IOMesssageHandler() {}
+
+    public String getUser() {
+        return this.user;
+    }
     public static void main(String[] args) {
         
         String res = "";
@@ -10,7 +22,7 @@ public class IOMesssageHandler {
         encode(res);
     }
 
-    private String[] analyse(String msg) {
+    private String[] check(String msg) {
         try {
             String[] data = msg.split("\\\\n");
             //System.out.println("[DEBUG]: " + data[0] + ";" + data[1] + ";" + data[2] + ";"+data[3]);
@@ -22,7 +34,7 @@ public class IOMesssageHandler {
     }
 
     public String decode(String msg) {
-        String[] data = analyse(msg);
+        String[] data = check(msg);
         //System.out.println("[DECODE] : "+ String.valueOf(data));
         if (data != null) {
             return "[" + data[1] + "] " + data[0] + ": " + data[3];
@@ -33,12 +45,12 @@ public class IOMesssageHandler {
     public static void encode(String msg) {
         //String[] entry = msg.split("");
         String res = msg;
-        res = res.replaceAll("[àâä]","a");
-        res = res.replace("éèêë","e");
-        res = res.replace("îï","i");
-        res = res.replace("ôö","o");
-        res = res.replace("ùûü","u");
-        res = res.replace("ÿ","y");
+        res = res.replaceAll("[àâä]", "a");
+        res = res.replace("éèêë", "e");
+        res = res.replace("îï", "i");
+        res = res.replace("ôö", "o");
+        res = res.replace("ùûü", "u");
+        res = res.replace("ÿ", "y");
         res = res.replace("ç", "c");
         res = res.replace("à", "a");
         /*
@@ -82,5 +94,67 @@ public class IOMesssageHandler {
         System.out.println(res);
         //String res = String. entry.
         //return entry;
+    }
+    
+    public void analyse(String msg) {
+        String[] cmd = msg.split(" ");
+        switch (cmd[0]) {
+            case "/color":
+                color(cmd);
+                break;
+            case "/help":
+                break;
+
+            default:
+                System.out.println("Commande non-reconnue");
+                break;
+        }
+    }
+    
+    public void color(String[] cmd) {
+        switch (cmd.length) {
+            case 1:
+                System.out.println("Afficher l'aide ici");
+                break;
+            case 2:
+                switch (cmd[1]) {
+                    case "noir": 
+                        user = "\u001B[30m" + username + "\u001B[0m";
+                        break;
+                    case "rouge":
+                        user = "\u001B[31m" + username + "\u001B[0m";
+                        break;
+                    case "vert":
+                        user = "\u001B[32m" + username + "\u001B[0m";
+                        break;
+                    case "jaune":
+                        user = "\u001B[33m" + username + "\u001B[0m";
+                        break;
+                    case "bleu":
+                        user = "\u001B[34m" + username + "\u001B[0m";
+                        break;
+                    case "violet":
+                        user = "\u001B[35m" + username + "\u001B[0m";
+                        break;
+                    case "cyan":
+                        user = "\u001B[36m" + username + "\u001B[0m";
+                        break;
+                    case "blanc":
+                        user = "\u001B[37m" + username + "\u001B[0m";
+                        break;
+                    case "reset":
+                        user = "\u001B[0m" + username;
+                        break;
+                
+                    default:
+                        break;
+                }
+        
+            default:
+                break;
+        }
+        if (cmd.length > 2) {
+            System.out.println("Commande invalide, voir /help color pour plus d'information");
+        }
     }
 }
