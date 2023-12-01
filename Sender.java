@@ -15,7 +15,7 @@ public class Sender {
         for (String arg : args) {
             res += arg;
         }
-        return "\u001B[32m"+res+"\u001B[0m";
+        return res;
     }
     
     public Sender(String[] args) throws Exception {

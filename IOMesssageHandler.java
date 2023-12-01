@@ -5,6 +5,7 @@ public class IOMesssageHandler {
 
     public IOMesssageHandler(String username) {
         this.username = username;
+        this.user = username;
     }
 
     public IOMesssageHandler() {}
@@ -118,37 +119,48 @@ public class IOMesssageHandler {
                 break;
             case 2:
                 switch (cmd[1]) {
-                    case "noir": 
-                        user = "\u001B[30m" + username + "\u001B[0m";
+                    case "noir":
+                        this.user = "\u001B[90m" + username + "\u001B[0m";
+                        System.out.println("Couleur du pseudo basculé en \u001B[30mnoir\u001B[0m");
                         break;
                     case "rouge":
                         user = "\u001B[31m" + username + "\u001B[0m";
+                        System.out.println("Couleur du pseudo basculé en \u001B[31mrouge\u001B[0m");
                         break;
                     case "vert":
                         user = "\u001B[32m" + username + "\u001B[0m";
+                        System.out.println("Couleur du pseudo basculé en \u001B[32mvert\u001B[0m");
                         break;
                     case "jaune":
                         user = "\u001B[33m" + username + "\u001B[0m";
+                        System.out.println("Couleur du pseudo basculé en \u001B[33mjaune\u001B[0m");
                         break;
                     case "bleu":
                         user = "\u001B[34m" + username + "\u001B[0m";
+                        System.out.println("Couleur du pseudo basculé en \u001B[34mbleu\u001B[0m");
                         break;
                     case "violet":
                         user = "\u001B[35m" + username + "\u001B[0m";
+                        System.out.println("Couleur du pseudo basculé en \u001B[35mviolet\u001B[0m");
                         break;
                     case "cyan":
                         user = "\u001B[36m" + username + "\u001B[0m";
+                        System.out.println("Couleur du pseudo basculé en \u001B[36mcyan\u001B[0m");
                         break;
                     case "blanc":
                         user = "\u001B[37m" + username + "\u001B[0m";
+                        System.out.println("Couleur du pseudo basculé en \u001B[37mblanc\u001B[0m");
                         break;
                     case "reset":
                         user = "\u001B[0m" + username;
+                        System.out.println("Couleur du pseudo réinitialisé");
                         break;
-                
+
                     default:
+                        System.out.println("Saisi non reconnue");
                         break;
                 }
+                System.out.println(user);
         
             default:
                 break;
