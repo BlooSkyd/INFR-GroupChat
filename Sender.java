@@ -21,6 +21,8 @@ public class Sender {
     public Sender(String[] args) throws Exception {
 
         IOMesssageHandler ioMH = new IOMesssageHandler(getSenderName(args));
+        ioMH.setDebug(false);
+
         CarnetAdresse carnet = new CarnetAdresse();
 
         InputStreamReader inputReader = new InputStreamReader(System.in);
@@ -40,8 +42,8 @@ public class Sender {
                 BufferedWriter bufferedWriter = new BufferedWriter(outputWriter);
 
                 Message msg = new Message(ioMH.getUser(), entry);
-                System.out.println("[Sender] : " + msg.send());
-
+                ioMH.debug("[Sender] : " + msg.send());
+                
                 bufferedWriter.write(msg.send());
                 bufferedWriter.flush();
 
