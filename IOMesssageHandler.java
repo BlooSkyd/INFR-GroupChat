@@ -1,8 +1,10 @@
+import java.util.ArrayList;
+
 public class IOMesssageHandler {
 
     private String username; 
     private String user;
-    private Boolean debugStatus = true;
+    private static Boolean debugStatus = false;
 
     public IOMesssageHandler(String username) {
         this.username = username;
@@ -16,10 +18,10 @@ public class IOMesssageHandler {
     }
 
     public void setDebug(Boolean mode) {
-        this.debugStatus = mode;
+        debugStatus = mode;
     }
 
-    public void debug(String debugMessage) {
+    public void printDebug(String debugMessage) {
         if (debugStatus) {System.out.println(debugMessage);}
     }
     public static void main(String[] args) {
@@ -32,24 +34,23 @@ public class IOMesssageHandler {
         encode(res);
     }
 
-    private String[] check(String msg) {
+    private Boolean check(ArrayList<String> msg) {
         try {
-            String[] data = msg.split("\\\\n");
-            //System.out.println("[DEBUG]: " + data[0] + ";" + data[1] + ";" + data[2] + ";"+data[3]);
-            return Integer.parseInt(data[2]) == data[3].length() ? data : null;
+            printDebug("[CHECK]: " + msg.get(0) + ";" + msg.get(1) + ";" + msg.get(2) + ";"+msg.get(3));
+            return Integer.parseInt(msg.get(2)) == msg.get(3).length();
         } catch (Exception e) {
-            System.out.println("[ANALYSE EXCEPTION] : "+ e);
-            return null;
+            System.out.println("[ioMH: ANALYSE EXCEPTION] : "+ e);
+            return false;
         }
     }
 
-    public String decode(String msg) {
-        String[] data = check(msg);
-        //System.out.println("[DECODE] : "+ String.valueOf(data));
-        if (data != null) {
-            return "[" + data[1] + "] " + data[0] + ": " + data[3];
+    public String decode(ArrayList<String> msg) {
+        if (check(msg)) {
+            printDebug("[DECODE]: " + String.valueOf(msg));
+            return "[" + msg.get(1) + "] " + msg.get(0) + ": " + msg.get(3);
+        } else {
+            return "Erreur decodage: nombre de caractrèes erroné ou format reçu non-conforme";
         }
-        return "Erreur";
     }
 
     public static void encode(String msg) {
@@ -109,11 +110,12 @@ public class IOMesssageHandler {
     public void analyse(String msg) {
         String[] cmd = msg.split(" ");
         switch (cmd[0]) {
+            case "/c":
             case "/color":
                 color(cmd);
                 break;
             case "/help":
-                // TODO
+                help(cmd);
                 break;
 
             default:
@@ -122,10 +124,10 @@ public class IOMesssageHandler {
         }
     }
     
-    public void color(String[] cmd) {
+    private void color(String[] cmd) {
         switch (cmd.length) {
             case 1:
-                System.out.println("Afficher l'aide ici");
+                helpColorMsg();
                 break;
             case 2:
                 switch (cmd[1]) {
@@ -161,22 +163,56 @@ public class IOMesssageHandler {
                         user = "\u001B[37m" + username + "\u001B[0m";
                         System.out.print("Couleur du pseudo basculé en \u001B[37mblanc\u001B[0m : ");
                         break;
+                    case "default":
                     case "reset":
                         user = "\u001B[0m" + username;
                         System.out.print("Couleur du pseudo réinitialisé : ");
                         break;
 
                     default:
-                        System.out.print("Saisi non reconnue, pseudo : ");
+                        System.out.print("Saisi non reconnue, utilisez [/help color] pour plus d'information");
                         break;
                 }
                 System.out.println(user);
-        
+
             default:
                 break;
         }
         if (cmd.length > 2) {
             System.out.println("Commande invalide, voir /help color pour plus d'information");
         }
+    }
+
+    private void help(String[] cmd) {
+        switch (cmd.length) {
+            case 1:
+                System.out.println("Usage: /help <color>");
+                System.out.println("Commandes: [color | c]");
+                break;
+            case 2:
+                switch (cmd[1]) {
+                    case "c":
+                    case "color":
+                        helpColorMsg();
+                        break;
+
+                    default:
+                        System.out.print("Saisi non reconnue, utilisez [/help color] pour plus d'information");
+                        break;
+                }
+                System.out.println(user);
+
+            default:
+                break;
+        }
+        if (cmd.length > 2) {
+            System.out.println("Commande invalide, voir /help color pour plus d'information");
+        }
+    }
+
+    
+    private void helpColorMsg() {
+        System.out.println("/color <couleur>|reset");
+        System.out.println("Couleurs disponibles: "+"\u001B[30mnoir\u001B[0m, "+"\u001B[31mrouge\u001B[0m, "+"\u001B[32mvert\u001B[0m, "+"\u001B[33mjaune\u001B[0m, "+"\u001B[34mbleu\u001B[0m, "+"\u001B[35mviolet\u001B[0m, "+"\u001B[36mcyan\u001B[0m, "+"\u001B[37mblanc\u001B[0m, default");
     }
 }

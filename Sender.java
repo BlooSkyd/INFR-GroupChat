@@ -42,9 +42,10 @@ public class Sender {
                 BufferedWriter bufferedWriter = new BufferedWriter(outputWriter);
 
                 Message msg = new Message(ioMH.getUser(), entry);
-                ioMH.debug("[Sender] : " + msg.send());
+                ioMH.printDebug("[Sender] : " + msg.send());
                 
                 bufferedWriter.write(msg.send());
+                bufferedWriter.newLine();
                 bufferedWriter.flush();
 
                 socket.close();

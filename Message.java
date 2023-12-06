@@ -18,16 +18,7 @@ public class Message {
     }
 
     public String send() {
-        return (this.nom + "\\n" + this.ldt + "\\n" + this.taille + "\\n" + this.message);
-    }
-
-    // TODO : à supprimer ?
-    public String get() {
-        if (Integer.parseInt(this.taille) == this.message.length()) {
-            return (this.nom + "\n" + this.ldt + "\n" + this.taille + "\n" + this.message);
-        } else {
-            return "Erreur";
-        }
+        return (this.nom + "\n" + this.ldt + "\n" + this.taille + "\n" + this.message);
     }
     
     @Override
