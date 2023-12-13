@@ -48,6 +48,10 @@ public static void run(String[] arg) throws Exception {
                 ArrayList<String> entry = new ArrayList<String>();//reader.readLine();
                 String line = "";
 
+                FileOutputStream fosLog = new FileOutputStream("messages.log",true);
+                OutputStreamWriter oswLog = new OutputStreamWriter(fosLog);
+                BufferedWriter bwLog = new BufferedWriter(oswLog);
+
                 // Tant que la saisie n'est pas "stop", on l'affiche
                 while ((line = reader.readLine()) != null) { //&& !entry.equals("$/stop")
                     entry.add(line);
@@ -61,14 +65,18 @@ public static void run(String[] arg) throws Exception {
                     iomHandler.printDebug("Décodage en cours...");
                     String result = iomHandler.decode(entry);
                     writer.write(result);
+                    bwLog.write(result);
+                    bwLog.newLine();
+                    bwLog.flush();
                     System.out.println(result);
-
                 }
                 
                 writer.flush();
                 writer.close();
                 output.close();
                 socket.close();
+                bwLog.close();
+
             } catch (Exception e) {
                 System.out.println("[Receiver Exception Catched] : "+e);
             }
