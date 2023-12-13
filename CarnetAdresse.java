@@ -11,8 +11,10 @@ public class CarnetAdresse {
                 InputStreamReader list_isr = new InputStreamReader(list_fis);
                 BufferedReader list_br = new BufferedReader(list_isr);
 
-                while(list_br.readLine() != null) {
-                    ip_list.add(list_br.readLine());
+                String entry = list_br.readLine();
+                while(entry != null) {
+                    ip_list.add(entry);
+                    entry = list_br.readLine();
                 }
 
                 list_br.close();

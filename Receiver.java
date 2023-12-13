@@ -1,58 +1,89 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
+import java.util.ArrayList;
 
 public class Receiver {
+
+    
     public static void main(String[] args) {
-        System.out.println("Starting Receiver.java");
-        //final long client_pid = Long.parseLong(args[0]);
         try {
-            ServerSocket server = new ServerSocket(2023);
-            System.out.println("[Server] A server is open: " + server.toString());
-            Boolean run = true;
+            run(args);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
 
-            //while (ProcessHandle.of(client_pid).isPresent()) {
-            while(run) {
-                // TODO : checker le statut de l'appli client
-                try {
-                    Socket socket = server.accept();
+    private static Boolean running = true;
+    private static ServerSocket server;
 
-                    InputStream input = socket.getInputStream();
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+    public static void setRunning(Boolean status) {
+        Receiver.running = status;
+    }
 
-                    OutputStream output = socket.getOutputStream();
-                    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(output));
+public static void run(String[] arg) throws Exception {
+        System.out.println("[Server] Starting Receiver.java");
+        //final long client_pid = Long.parseLong(args[0]);
 
-                    String entry = reader.readLine();
+        Receiver.server = new ServerSocket(2023);
+        System.out.println("[Server] A server is open: " + server.toString());
 
-                    // Tant que la saisie n'est pas "stop", on l'affiche
-                    while (!entry.equals("$/stop")) {
-                        System.out.println("[Server] Received: " + entry);
-                        writer.write(entry);
-                        writer.newLine();
-                        System.out.println(entry);
-                        writer.flush();
-                        entry = reader.readLine();
-                    }
+        //while (ProcessHandle.of(client_pid).isPresent()) {
+        while (running) {
+            // IDEA : checker le statut de l'appli client
 
-                    writer.close();
-                    output.close();
-                    System.out.println("[Server] Command prompt, closing server...");
-                    run = false;
+            try {
+                Socket socket = server.accept();
+            
+                IOMesssageHandler iomHandler = new IOMesssageHandler();
+                iomHandler.printDebug("Connexion reçue "+ socket.toString());
 
-                } catch (SocketException e) {
-                    // TODO: handle exception
+                InputStream input = socket.getInputStream();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+
+                OutputStream output = socket.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(output));
+
+                ArrayList<String> entry = new ArrayList<String>();//reader.readLine();
+                String line = "";
+
+                FileOutputStream fosLog = new FileOutputStream("messages.log",true);
+                OutputStreamWriter oswLog = new OutputStreamWriter(fosLog);
+                BufferedWriter bwLog = new BufferedWriter(oswLog);
+
+                // Tant que la saisie n'est pas "stop", on l'affiche
+                while ((line = reader.readLine()) != null) { //&& !entry.equals("$/stop")
+                    entry.add(line);
+                    iomHandler.printDebug("Ligne reçue : " + line);
                 }
-
+                iomHandler.printDebug("Fin de reception : "+entry.size()+" message(s) réceptionné(s)");
+                if (entry.size() != 4) {
+                    writer.write("Erreur récéption: nombre d'arguments incorrect");
+                    System.out.println("Erreur récéption: nombre d'arguments incorrect");
+                } else {
+                    iomHandler.printDebug("Décodage en cours...");
+                    String result = iomHandler.decode(entry);
+                    writer.write(result);
+                    bwLog.write(result);
+                    bwLog.newLine();
+                    bwLog.flush();
+                    System.out.println(result);
+                }
                 
+                writer.flush();
+                writer.close();
+                output.close();
+                socket.close();
+                bwLog.close();
+
+            } catch (Exception e) {
+                System.out.println("[Receiver Exception Catched] : "+e);
             }
             
-            System.out.println("[Server] Client down, closing server...");
-            server.close();
-            
-        } catch (Exception e) {
-            System.out.println(">>> Exception: "+e);
         }
+
+        System.out.println("[Server] Client down, closing server...");
+        server.close();
     }
 }

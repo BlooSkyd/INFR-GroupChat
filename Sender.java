@@ -1,10 +1,14 @@
 import java.io.*;
 import java.net.*;
-import java.time.*;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 
 public class Sender {
+    public static void main(String[] args) {
+        try {
+            new Sender(args);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     
     private static String getSenderName(String[] args) {
         String res = "";
@@ -13,40 +17,55 @@ public class Sender {
         }
         return res;
     }
+    
+    public Sender(String[] args) throws Exception {
 
-    public static void main(String[] args) {
-        
-        final String user = getSenderName(args); 
+        IOMesssageHandler ioMH = new IOMesssageHandler(getSenderName(args));
+        ioMH.setDebug(true);
 
-        try {
-            CarnetAdresse ca = new CarnetAdresse();
+        CarnetAdresse carnet = new CarnetAdresse();
 
+        InputStreamReader inputReader = new InputStreamReader(System.in);
+        BufferedReader bufferReader = new BufferedReader(inputReader);
 
-            String message = new String();
+        String entry = bufferReader.readLine();
+        Boolean msgToSend = !entry.startsWith("/") && !entry.equals("");
 
-            InputStreamReader isr = new InputStreamReader(System.in);
-            BufferedReader br = new BufferedReader(isr);
+        while (!entry.equals("/stop")) {
 
-            for (int i = 0; i < ca.getSize(); i++ ) {
-                Socket so = new Socket(ca.getIp(i),2023);
+            if (msgToSend) {
+                int nb_envoie = 0;
+                for (int i = 0; i < carnet.getSize(); i++) {
+                    try {
+                        Socket socket = new Socket(carnet.getIp(i), 2023);
+                        //socket.setSoTimeout(300);
 
-                OutputStream os = so.getOutputStream();
-                OutputStreamWriter osw = new OutputStreamWriter(os);
-                BufferedWriter bw = new BufferedWriter(osw);
+                        OutputStream os = socket.getOutputStream();
+                        OutputStreamWriter outputWriter = new OutputStreamWriter(os);
+                        BufferedWriter bufferedWriter = new BufferedWriter(outputWriter);
 
-                message = br.readLine();
-                LocalDateTime ldt = LocalDateTime.now();
-                DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                        Message msg = new Message(ioMH.getUser(), entry);
+                        ioMH.printDebug("[Sender] : " + msg.send());
 
-                Message m = new Message(user, ldt.format(dtf), String.valueOf(message.length()), message);
-                bw.write(m.send());
-                bw.flush();
-                System.out.println(m.send());
-                so.close();
+                        bufferedWriter.write(msg.send());
+                        bufferedWriter.newLine();
+                        bufferedWriter.flush();
+
+                        socket.close();
+                        nb_envoie++;
+                    } catch (Exception e) {
+                        ioMH.printDebug("[SKIP] " + carnet.getIp(i) + " n'est pas connecté");
+                    }
+                }
+                ioMH.printDebug("Message envoyé à " + nb_envoie + "/" + carnet.getSize() + " adresse(s)");
+            } else {
+                ioMH.analyse(entry);
             }
+            
+            entry = bufferReader.readLine();
+            msgToSend = !entry.startsWith("/") && !entry.equals("");
+
         }
-        catch(Exception e) {
-            e.printStackTrace();
-        }
+    
     }
 }
