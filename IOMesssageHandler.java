@@ -165,7 +165,8 @@ public class IOMesssageHandler {
                         break;
                     case "default":
                     case "reset":
-                        user = "\u001B[0m" + username;
+                    case "clear":
+                        user = username;
                         System.out.print("Couleur du pseudo réinitialisé : ");
                         break;
 

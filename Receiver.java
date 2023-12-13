@@ -33,41 +33,46 @@ public static void run(String[] arg) throws Exception {
         while (running) {
             // IDEA : checker le statut de l'appli client
 
-            Socket socket = server.accept();
+            try {
+                Socket socket = server.accept();
             
-            IOMesssageHandler iomHandler = new IOMesssageHandler();
-            iomHandler.printDebug("Connexion reçue "+ socket.toString());
+                IOMesssageHandler iomHandler = new IOMesssageHandler();
+                iomHandler.printDebug("Connexion reçue "+ socket.toString());
 
-            InputStream input = socket.getInputStream();
-            BufferedReader reader = new BufferedReader(new InputStreamReader(input));
+                InputStream input = socket.getInputStream();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(input));
 
-            OutputStream output = socket.getOutputStream();
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(output));
+                OutputStream output = socket.getOutputStream();
+                BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(output));
 
-            ArrayList<String> entry = new ArrayList<String>();//reader.readLine();
-            String line = "";
+                ArrayList<String> entry = new ArrayList<String>();//reader.readLine();
+                String line = "";
 
-            // Tant que la saisie n'est pas "stop", on l'affiche
-            while ((line = reader.readLine()) != null) { //&& !entry.equals("$/stop")
-                entry.add(line);
-                iomHandler.printDebug("Ligne reçue : " + line);
-            }
-            iomHandler.printDebug("Fin de reception : "+entry.size()+" message(s) réceptionné(s)");
-            if (entry.size() != 4) {
-                writer.write("Erreur récéption: nombre d'arguments incorrect");
-                System.out.println("Erreur récéption: nombre d'arguments incorrect");
-            } else {
-                iomHandler.printDebug("Décodage en cours...");
-                String result = iomHandler.decode(entry);
-                writer.write(result);
-                System.out.println(result);
+                // Tant que la saisie n'est pas "stop", on l'affiche
+                while ((line = reader.readLine()) != null) { //&& !entry.equals("$/stop")
+                    entry.add(line);
+                    iomHandler.printDebug("Ligne reçue : " + line);
+                }
+                iomHandler.printDebug("Fin de reception : "+entry.size()+" message(s) réceptionné(s)");
+                if (entry.size() != 4) {
+                    writer.write("Erreur récéption: nombre d'arguments incorrect");
+                    System.out.println("Erreur récéption: nombre d'arguments incorrect");
+                } else {
+                    iomHandler.printDebug("Décodage en cours...");
+                    String result = iomHandler.decode(entry);
+                    writer.write(result);
+                    System.out.println(result);
 
+                }
+                
+                writer.flush();
+                writer.close();
+                output.close();
+                socket.close();
+            } catch (Exception e) {
+                System.out.println("[Receiver Exception Catched] : "+e);
             }
             
-            writer.flush();
-            writer.close();
-            output.close();
-            socket.close();
         }
 
         System.out.println("[Server] Client down, closing server...");

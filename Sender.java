@@ -34,22 +34,30 @@ public class Sender {
         while (!entry.equals("/stop")) {
 
             if (msgToSend) {
+                int nb_envoie = 0;
                 for (int i = 0; i < carnet.getSize(); i++) {
-                Socket socket = new Socket(carnet.getIp(i), 2023);
+                    try {
+                        Socket socket = new Socket(carnet.getIp(i), 2023);
+                        //socket.setSoTimeout(300);
 
-                OutputStream os = socket.getOutputStream();
-                OutputStreamWriter outputWriter = new OutputStreamWriter(os);
-                BufferedWriter bufferedWriter = new BufferedWriter(outputWriter);
+                        OutputStream os = socket.getOutputStream();
+                        OutputStreamWriter outputWriter = new OutputStreamWriter(os);
+                        BufferedWriter bufferedWriter = new BufferedWriter(outputWriter);
 
-                Message msg = new Message(ioMH.getUser(), entry);
-                ioMH.printDebug("[Sender] : " + msg.send());
-                
-                bufferedWriter.write(msg.send());
-                bufferedWriter.newLine();
-                bufferedWriter.flush();
+                        Message msg = new Message(ioMH.getUser(), entry);
+                        ioMH.printDebug("[Sender] : " + msg.send());
 
-                socket.close();
-                } 
+                        bufferedWriter.write(msg.send());
+                        bufferedWriter.newLine();
+                        bufferedWriter.flush();
+
+                        socket.close();
+                        nb_envoie++;
+                    } catch (Exception e) {
+                        ioMH.printDebug("[SKIP] " + carnet.getIp(i) + " n'est pas connecté");
+                    }
+                }
+                ioMH.printDebug("Message envoyé à "+nb_envoie+"/"+carnet.getSize());
             } else {
                 ioMH.analyse(entry);
             }
