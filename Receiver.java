@@ -69,7 +69,7 @@ public static void run(String[] arg) throws Exception {
                     std = new stringToDate(result);
 
                     writer.write(std.getMessage());
-                    bwLog.write(std.getMessage());
+                    bwLog.write(result);
                     bwLog.newLine();
                     bwLog.flush();
                     System.out.println(std.getMessage());
