@@ -4,8 +4,6 @@ import java.net.Socket;
 import java.util.ArrayList;
 
 public class Receiver {
-
-    
     public static void main(String[] args) {
         try {
             run(args);
@@ -23,6 +21,7 @@ public class Receiver {
     }
 
 public static void run(String[] arg) throws Exception {
+
         System.out.println("[Server] Starting Receiver.java");
         //final long client_pid = Long.parseLong(args[0]);
 
@@ -35,7 +34,9 @@ public static void run(String[] arg) throws Exception {
 
             try {
                 Socket socket = server.accept();
-            
+                
+                stringToDate std;
+
                 IOMesssageHandler iomHandler = new IOMesssageHandler();
                 iomHandler.printDebug("Connexion reçue "+ socket.toString());
 
@@ -64,11 +65,14 @@ public static void run(String[] arg) throws Exception {
                 } else {
                     iomHandler.printDebug("Décodage en cours...");
                     String result = iomHandler.decode(entry);
-                    writer.write(result);
-                    bwLog.write(result);
+
+                    std = new stringToDate(result);
+
+                    writer.write(std.getMessage());
+                    bwLog.write(std.getMessage());
                     bwLog.newLine();
                     bwLog.flush();
-                    System.out.println(result);
+                    System.out.println(std.getMessage());
                 }
                 
                 writer.flush();
