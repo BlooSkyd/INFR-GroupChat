@@ -21,7 +21,7 @@ public class Sender {
     public Sender(String[] args) throws Exception {
 
         IOMesssageHandler ioMH = new IOMesssageHandler(getSenderName(args));
-        ioMH.setDebug(false);
+        ioMH.setDebug(true);
 
         CarnetAdresse carnet = new CarnetAdresse();
 
@@ -57,7 +57,7 @@ public class Sender {
                         ioMH.printDebug("[SKIP] " + carnet.getIp(i) + " n'est pas connecté");
                     }
                 }
-                ioMH.printDebug("Message envoyé à "+nb_envoie+"/"+carnet.getSize());
+                ioMH.printDebug("Message envoyé à " + nb_envoie + "/" + carnet.getSize() + " adresse(s)");
             } else {
                 ioMH.analyse(entry);
             }
