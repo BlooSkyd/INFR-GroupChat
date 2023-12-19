@@ -65,11 +65,11 @@ public static void run(String[] arg) throws Exception {
                 } else {
                     iomHandler.printDebug("Décodage en cours...");
                     String result = iomHandler.decode(entry);
-
+                    
                     std = new stringToDate(result);
 
                     writer.write(std.getMessage());
-                    bwLog.write(result);
+                    bwLog.write(std.getMessage());
                     bwLog.newLine();
                     bwLog.flush();
                     System.out.println(std.getMessage());
