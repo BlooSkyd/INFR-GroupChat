@@ -1,17 +1,21 @@
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 
 public class IOMesssageHandler {
 
-    private String username; 
+    private String username;
     private String user;
     private static Boolean debugStatus = false;
+    private static DateTimeFormatter dtFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public IOMesssageHandler(String username) {
         this.username = username;
         this.user = username;
     }
 
-    public IOMesssageHandler() {}
+    public IOMesssageHandler() {
+    }
 
     public String getUser() {
         return this.user;
@@ -19,27 +23,31 @@ public class IOMesssageHandler {
 
     public void setDebug(Boolean mode) {
         debugStatus = mode;
+        System.out.println("[IOMH] Debug mode set to: " + mode);
     }
 
     public void printDebug(String debugMessage) {
-        if (debugStatus) {System.out.println(debugMessage);}
-    }
-    public static void main(String[] args) {
-        
-        String res = "";
-        for (String arg : args) {
-            res += arg + " ";
+        if (debugStatus) {
+            System.out.println(debugMessage);
         }
-        System.out.println("arg: ["+res+"]");
-        encode(res);
+    }
+
+    private Boolean checkDateFormat(String dateMsg) {
+        try {
+            dtFormat.parse(dateMsg);
+        } catch (DateTimeParseException e) {
+            System.out.println("[ioMH] Analyse Exception : date format invalid");
+            return false;
+        }
+        return true;
     }
 
     private Boolean check(ArrayList<String> msg) {
         try {
-            printDebug("[CHECK]: " + msg.get(0) + ";" + msg.get(1) + ";" + msg.get(2) + ";"+msg.get(3));
-            return Integer.parseInt(msg.get(2)) == msg.get(3).length();
+            printDebug("[CHECK]: " + msg.get(0) + ";" + msg.get(1) + ";" + msg.get(2) + ";" + msg.get(3));
+            return Integer.parseInt(msg.get(2)) == msg.get(3).length() == checkDateFormat(msg.get(1));
         } catch (Exception e) {
-            System.out.println("[ioMH: ANALYSE EXCEPTION] : "+ e);
+            System.out.println("[ioMH: ANALYSE EXCEPTION] : " + e);
             return false;
         }
     }
@@ -53,60 +61,6 @@ public class IOMesssageHandler {
         }
     }
 
-    public static void encode(String msg) {
-        //String[] entry = msg.split("");
-        String res = msg;
-        res = res.replaceAll("[àâä]", "a");
-        res = res.replace("éèêë", "e");
-        res = res.replace("îï", "i");
-        res = res.replace("ôö", "o");
-        res = res.replace("ùûü", "u");
-        res = res.replace("ÿ", "y");
-        res = res.replace("ç", "c");
-        res = res.replace("à", "a");
-        /*
-        for (String ch : entry) {
-            switch (ch) {
-                case "à":
-                case "â":
-                case "ä":
-                    res += "a";
-                    break;
-                case "é":
-                case "è":
-                case "ê":
-                case "ë":
-                    res += "e";
-                    break;
-                case "î":
-                case "ï":
-                    res += "i";
-                    break;
-                case "ô":
-                case "ö":
-                    res += "o";
-                    break;
-                case "ù":
-                case "û":
-                case "ü":
-                    res += "u";
-                    break;
-                case "ÿ":
-                    res += "y";
-                    break;
-                case "ç":
-                    res += "c";
-                    break;
-                default:
-                    res += ch;
-                    break;
-            }
-        }*/
-        System.out.println(res);
-        //String res = String. entry.
-        //return entry;
-    }
-    
     public void analyse(String msg) {
         String[] cmd = msg.split(" ");
         switch (cmd[0]) {
@@ -123,7 +77,7 @@ public class IOMesssageHandler {
                 break;
         }
     }
-    
+
     private void color(String[] cmd) {
         switch (cmd.length) {
             case 1:
@@ -187,7 +141,9 @@ public class IOMesssageHandler {
     private void help(String[] cmd) {
         switch (cmd.length) {
             case 1:
-                System.out.println("Usage: /help <color>");
+                System.out.println(
+                        "La commande /help vous permet de se renseigner sur le fonctionnement des commandes existantes.");
+                System.out.println("Usage: /help <command>");
                 System.out.println("Commandes: [color | c]");
                 break;
             case 2:
@@ -211,9 +167,12 @@ public class IOMesssageHandler {
         }
     }
 
-    
     private void helpColorMsg() {
+        System.out.println(
+                "La fonction /color vous permet de changer la couleur de votre pseudo\nAttention, cela peut causer des problèmes à la réception pour d'autre utilisateur.");
         System.out.println("/color <couleur>|reset");
-        System.out.println("Couleurs disponibles: "+"\u001B[30mnoir\u001B[0m, "+"\u001B[31mrouge\u001B[0m, "+"\u001B[32mvert\u001B[0m, "+"\u001B[33mjaune\u001B[0m, "+"\u001B[34mbleu\u001B[0m, "+"\u001B[35mviolet\u001B[0m, "+"\u001B[36mcyan\u001B[0m, "+"\u001B[37mblanc\u001B[0m, default");
+        System.out.println("Couleurs disponibles: " + "\u001B[30mnoir\u001B[0m, " + "\u001B[31mrouge\u001B[0m, "
+                + "\u001B[32mvert\u001B[0m, " + "\u001B[33mjaune\u001B[0m, " + "\u001B[34mbleu\u001B[0m, "
+                + "\u001B[35mviolet\u001B[0m, " + "\u001B[36mcyan\u001B[0m, " + "\u001B[37mblanc\u001B[0m, default");
     }
 }

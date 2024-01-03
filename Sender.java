@@ -9,7 +9,7 @@ public class Sender {
             e.printStackTrace();
         }
     }
-    
+
     private static String getSenderName(String[] args) {
         String res = "";
         for (String arg : args) {
@@ -17,8 +17,12 @@ public class Sender {
         }
         return res;
     }
-    
+
     public Sender(String[] args) throws Exception {
+        System.out.println("[Sender] Starting Sender.java");
+        System.out.println("[Sender] Des informations sur le projet sont disponibles dans le fichier README.md");
+        System.out.println("[Sender] Des fonctionnalités sont disponibles ! Tapez /help pour plus d'informations");
+        System.out.println("[Sender] Vous pouvez fermez le Sender en envoyant /stop");
 
         IOMesssageHandler ioMH = new IOMesssageHandler(getSenderName(args));
         ioMH.setDebug(true);
@@ -38,7 +42,7 @@ public class Sender {
                 for (int i = 0; i < carnet.getSize(); i++) {
                     try {
                         Socket socket = new Socket(carnet.getIp(i), 2023);
-                        //socket.setSoTimeout(300);
+                        socket.setSoTimeout(300);
 
                         OutputStream os = socket.getOutputStream();
                         OutputStreamWriter outputWriter = new OutputStreamWriter(os);
@@ -61,11 +65,11 @@ public class Sender {
             } else {
                 ioMH.analyse(entry);
             }
-            
+
             entry = bufferReader.readLine();
             msgToSend = !entry.startsWith("/") && !entry.equals("");
 
         }
-    
+
     }
 }
