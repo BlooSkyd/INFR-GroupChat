@@ -20,7 +20,7 @@ public class Message {
     public String send() {
         return (this.nom + "\n" + this.ldt + "\n" + this.taille + "\n" + this.message);
     }
-    
+
     @Override
     public String toString() {
         return this.nom + ";" + this.ldt + ";" + this.taille + ";" + this.message;
